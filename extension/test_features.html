@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <title>PhishCatcher Feature Test</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background: #f5f5f5;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            margin-top: 30px;
+        }
+
+        .test {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .url {
+            font-family: monospace;
+            background: #eee;
+            padding: 10px;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            background: white;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background: #eee;
+        }
+
+        .pass {
+            color: green;
+            font-weight: bold;
+        }
+
+        .fail {
+            color: red;
+            font-weight: bold;
+        }
+
+        .diagnostic {
+            background: #111;
+            color: #eee;
+            padding: 15px;
+            overflow-x: auto;
+            border-radius: 6px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>PhishCatcher Feature Extraction Test</h1>
+
+    <p>
+        This page directly passes test URL strings to
+        <code>extractURLFeatures()</code>.
+    </p>
+
+    <h2>Test Results</h2>
+
+    <div id="results"></div>
+
+    <!-- ===================================================== -->
+    <!-- PHISHCATCHER EXTRACTORS                               -->
+    <!-- ===================================================== -->
+
+    <script src="extractors/urlFeatures.js"></script>
+    <script src="extractors/htmlFeatures.js"></script>
+    <script src="extractors/tldParser.js"></script>
+    <script src="extractors/entropy.js"></script>
+    <script src="extractors/keywordDetector.js"></script>
+
+
+    <!-- ===================================================== -->
+    <!-- TEST CODE                                             -->
+    <!-- ===================================================== -->
+
+    <script>
+        "use strict";
+
+        const resultsContainer =
+            document.getElementById("results");
+
+
+        /*
+         * -----------------------------------------------------
+         * TEST URLS
+         * -----------------------------------------------------
+         */
+
+        const testURLs = [
+
+            /*
+             * Test 1
+             * Normal legitimate URL
+             */
+            "https://example.com/",
+
+            /*
+             * Test 2
+             * IP address
+             */
+            "http://192.168.1.100/login",
+
+            /*
+             * Test 3
+             * Suspicious domain
+             */
+            "https://paypal-login-example.com/verify",
+
+            /*
+             * Test 4
+             * Unicode domain.
+             *
+             * The characters "ра" are Cyrillic.
+             */
+            "https://раypal.com/",
+
+            /*
+             * Test 5
+             * Mixed-script Unicode domain.
+             *
+             * The "а" in pаypal is Cyrillic.
+             */
+            "https://pаypal.com/account/login",
+
+            /*
+             * Test 6
+             * Non-standard port.
+             */
+            "https://example.com:8080/login?user=test"
+        ];
+
+
+        /*
+         * -----------------------------------------------------
+         * HELPER FUNCTIONS
+         * -----------------------------------------------------
+         */
+
+        function escapeHTML(value) {
+            return String(value)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+
+        function addTestResult(
+            testNumber,
+            url,
+            features
+        ) {
+            const container =
+                document.createElement("div");
+
+            container.className = "test";
+
+            container.innerHTML = `
+                <h3>Test ${testNumber}</h3>
+
+                <div class="url">
+                    ${escapeHTML(url)}
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        ${Object.entries(features)
+                            .map(
+                                ([name, value]) => `
+                                    <tr>
+                                        <td>
+                                            ${escapeHTML(name)}
+                                        </td>
+
+                                        <td>
+                                            ${escapeHTML(
+                                                String(value)
+                                            )}
+                                        </td>
+                                    </tr>
+                                `
+                            )
+                            .join("")}
+                    </tbody>
+                </table>
+            `;
+
+            resultsContainer.appendChild(container);
+        }
+
+
+        /*
+         * -----------------------------------------------------
+         * CHECK EXTRACTOR AVAILABILITY
+         * -----------------------------------------------------
+         */
+
+        console.log(
+            "=========================================="
+        );
+
+        console.log(
+            "PhishCatcher Extractor Availability"
+        );
+
+        console.log(
+            "=========================================="
+        );
+
+        console.log(
+            "URL extractor:",
+            typeof PhishCatcher
+                .Extractors
+                .extractURLFeatures
+        );
+
+        console.log(
+            "HTML extractor:",
+            typeof PhishCatcher
+                .Extractors
+                .extractHTMLFeatures
+        );
+
+        console.log(
+            "Domain extractor:",
+            typeof PhishCatcher
+                .Extractors
+                .getDomainFeatures
+        );
+
+        console.log(
+            "Entropy extractor:",
+            typeof PhishCatcher
+                .Extractors
+                .extractEntropyFeatures
+        );
+
+        console.log(
+            "Keyword extractor:",
+            typeof PhishCatcher
+                .Extractors
+                .extractKeywordFeatures
+        );
+
+
+        /*
+         * -----------------------------------------------------
+         * NORMAL URL FEATURE TESTS
+         * -----------------------------------------------------
+         */
+
+        console.log(
+            "\n=========================================="
+        );
+
+        console.log(
+            "PhishCatcher URL Feature Tests"
+        );
+
+        console.log(
+            "=========================================="
+        );
+
+
+        testURLs.forEach(
+            (url, index) => {
+
+                console.log(
+                    `\n========== TEST ${index + 1} ==========`
+                );
+
+                console.log(
+                    "Original test URL:"
+                );
+
+                console.log(url);
+
+
+                /*
+                 * Show what JavaScript's URL parser
+                 * converts the hostname into.
+                 */
+                try {
+
+                    const parsed =
+                        new URL(url);
+
+                    console.log(
+                        "URL.hostname:"
+                    );
+
+                    console.log(
+                        parsed.hostname
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        "URL parsing error:",
+                        error
+                    );
+                }
+
+
+                /*
+                 * Run PhishCatcher URL extractor.
+                 */
+                const features =
+                    PhishCatcher
+                        .Extractors
+                        .extractURLFeatures(
+                            url
+                        );
+
+
+                console.log(
+                    "Extracted features:"
+                );
+
+                console.table(
+                    features
+                );
+
+
+                addTestResult(
+                    index + 1,
+                    url,
+                    features
+                );
+            }
+        );
+
+
+        /*
+         * -----------------------------------------------------
+         * EXPLICIT UNICODE / PUNYCODE TEST
+         * -----------------------------------------------------
+         */
+
+        console.log(
+            "\n=========================================="
+        );
+
+        console.log(
+            "EXPLICIT UNICODE / PUNYCODE TEST"
+        );
+
+        console.log(
+            "=========================================="
+        );
+
+
+        /*
+         * This is a JavaScript string containing
+         * the actual Unicode characters.
+         */
+        const unicodeTestURL =
+            "https://раypal.com/";
+
+
+        console.log(
+            "Original Unicode test string:"
+        );
+
+        console.log(
+            unicodeTestURL
+        );
+
+
+        /*
+         * -----------------------------------------------------
+         * BROWSER URL PARSER TEST
+         * -----------------------------------------------------
+         */
+
+        let parsedUnicodeURL = null;
+
+        try {
+
+            parsedUnicodeURL =
+                new URL(
+                    unicodeTestURL
+                );
+
+            console.log(
+                "Browser URL parser hostname:"
+            );
+
+            console.log(
+                parsedUnicodeURL.hostname
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Unicode URL parsing error:",
+                error
+            );
+        }
+
+
+        /*
+         * -----------------------------------------------------
+         * RAW UNICODE HOSTNAME TEST
+         * -----------------------------------------------------
+         *
+         * IMPORTANT:
+         *
+         * This does NOT use new URL().
+         *
+         * It reads the hostname directly from
+         * the original JavaScript string.
+         */
+
+        const rawUnicodeHostname =
+            unicodeTestURL
+                .replace(
+                    /^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//,
+                    ""
+                )
+                .split(/[/?#]/)[0]
+                .split("@")
+                .pop();
+
+
+        console.log(
+            "Raw Unicode hostname:"
+        );
+
+        console.log(
+            rawUnicodeHostname
+        );
+
+
+        /*
+         * Direct Unicode check.
+         */
+        const rawUnicodeDetected =
+            /[^\x00-\x7F]/.test(
+                rawUnicodeHostname
+            );
+
+
+        console.log(
+            "Raw hostname contains Unicode:"
+        );
+
+        console.log(
+            rawUnicodeDetected
+        );
+
+
+        /*
+         * Show individual characters and
+         * Unicode code points.
+         */
+        console.log(
+            "Raw hostname characters:"
+        );
+
+        for (
+            const character
+            of rawUnicodeHostname
+        ) {
+
+            console.log(
+                character,
+                "U+" +
+                character
+                    .codePointAt(0)
+                    .toString(16)
+                    .toUpperCase()
+            );
+        }
+
+
+        /*
+         * -----------------------------------------------------
+         * RUN URL EXTRACTOR ON UNICODE TEST
+         * -----------------------------------------------------
+         */
+
+        const unicodeFeatures =
+            PhishCatcher
+                .Extractors
+                .extractURLFeatures(
+                    unicodeTestURL
+                );
+
+
+        console.log(
+            "Unicode feature results:"
+        );
+
+        console.table(
+            unicodeFeatures
+        );
+
+
+        console.log(
+            "unicode_present:",
+            unicodeFeatures
+                .unicode_present
+        );
+
+        console.log(
+            "mixed_script:",
+            unicodeFeatures
+                .mixed_script
+        );
+
+        console.log(
+            "homograph_similarity:",
+            unicodeFeatures
+                .homograph_similarity
+        );
+
+
+        /*
+         * -----------------------------------------------------
+         * UNICODE EXPECTATIONS
+         * -----------------------------------------------------
+         */
+
+        const unicodePassed =
+            unicodeFeatures
+                .unicode_present === 1;
+
+        const mixedScriptPassed =
+            unicodeFeatures
+                .mixed_script === 1;
+
+
+        const unicodeStatus =
+            unicodePassed
+                ? "PASS"
+                : "FAIL";
+
+        const mixedScriptStatus =
+            mixedScriptPassed
+                ? "PASS"
+                : "FAIL";
+
+
+        console.log(
+            `Unicode detection: ${unicodeStatus}`
+        );
+
+        console.log(
+            `Mixed-script detection: ${mixedScriptStatus}`
+        );
+
+
+        /*
+         * -----------------------------------------------------
+         * UNICODE SUMMARY
+         * -----------------------------------------------------
+         */
+
+        const summary =
+            document.createElement("div");
+
+        summary.className = "test";
+
+        summary.innerHTML = `
+            <h2>Unicode Detection Summary</h2>
+
+            <p>
+                <strong>Test URL:</strong>
+                <code>
+                    ${escapeHTML(
+                        unicodeTestURL
+                    )}
+                </code>
+            </p>
+
+            <p>
+                <strong>Browser parsed hostname:</strong>
+                <code>
+                    ${
+                        parsedUnicodeURL
+                            ? escapeHTML(
+                                parsedUnicodeURL.hostname
+                            )
+                            : "Parsing failed"
+                    }
+                </code>
+            </p>
+
+            <p>
+                <strong>Raw Unicode hostname:</strong>
+                <code>
+                    ${escapeHTML(
+                        rawUnicodeHostname
+                    )}
+                </code>
+            </p>
+
+            <p>
+                <strong>Raw Unicode detected:</strong>
+                <span class="${
+                    rawUnicodeDetected
+                        ? "pass"
+                        : "fail"
+                }">
+                    ${rawUnicodeDetected}
+                </span>
+            </p>
+
+            <p>
+                <strong>unicode_present:</strong>
+                <span class="${
+                    unicodePassed
+                        ? "pass"
+                        : "fail"
+                }">
+                    ${
+                        unicodeFeatures
+                            .unicode_present
+                    }
+                    -
+                    ${unicodeStatus}
+                </span>
+            </p>
+
+            <p>
+                <strong>mixed_script:</strong>
+                <span class="${
+                    mixedScriptPassed
+                        ? "pass"
+                        : "fail"
+                }">
+                    ${
+                        unicodeFeatures
+                            .mixed_script
+                    }
+                    -
+                    ${mixedScriptStatus}
+                </span>
+            </p>
+
+            <p>
+                <strong>homograph_similarity:</strong>
+                ${
+                    unicodeFeatures
+                        .homograph_similarity
+                }
+            </p>
+        `;
+
+        resultsContainer.appendChild(
+            summary
+        );
+
+
+        /*
+         * -----------------------------------------------------
+         * DOMAIN FEATURE TEST
+         * -----------------------------------------------------
+         */
+
+        console.log(
+            "\n=========================================="
+        );
+
+        console.log(
+            "DOMAIN FEATURE TEST"
+        );
+
+        console.log(
+            "=========================================="
+        );
+
+
+        if (
+            typeof PhishCatcher
+                .Extractors
+                .getDomainFeatures ===
+            "function"
+        ) {
+
+            testURLs.forEach(
+                (url, index) => {
+
+                    const domainFeatures =
+                        PhishCatcher
+                            .Extractors
+                            .getDomainFeatures(
+                                url
+                            );
+
+                    console.log(
+                        `DOMAIN TEST ${index + 1}:`,
+                        url
+                    );
+
+                    console.table(
+                        domainFeatures
+                    );
+                }
+            );
+
+        } else {
+
+            console.warn(
+                "getDomainFeatures() is not available."
+            );
+        }
+
+
+        /*
+         * -----------------------------------------------------
+         * ENTROPY FEATURE TEST
+         * -----------------------------------------------------
+         */
+
+        console.log(
+            "\n=========================================="
+        );
+
+        console.log(
+            "ENTROPY FEATURE TEST"
+        );
+
+        console.log(
+            "=========================================="
+        );
+
+
+        if (
+            typeof PhishCatcher
+                .Extractors
+                .extractEntropyFeatures ===
+            "function"
+        ) {
+
+            testURLs.forEach(
+                (url, index) => {
+
+                    const entropyFeatures =
+                        PhishCatcher
+                            .Extractors
+                            .extractEntropyFeatures(
+                                url
+                            );
+
+                    console.log(
+                        `ENTROPY TEST ${index + 1}:`,
+                        url
+                    );
+
+                    console.table(
+                        entropyFeatures
+                    );
+                }
+            );
+
+        } else {
+
+            console.warn(
+                "extractEntropyFeatures() is not available."
+            );
+        }
+
+
+        /*
+         * -----------------------------------------------------
+         * COMBINED FEATURE TEST
+         * -----------------------------------------------------
+         */
+
+        console.log(
+            "\n=========================================="
+        );
+
+        console.log(
+            "COMBINED FEATURE TEST"
+        );
+
+        console.log(
+            "=========================================="
+        );
+
+
+        const combinedURL =
+            "https://раypal.com/account/login";
+
+
+        let combinedFeatures = {};
+
+
+        /*
+         * URL features
+         */
+        if (
+            typeof PhishCatcher
+                .Extractors
+                .extractURLFeatures ===
+            "function"
+        ) {
+
+            combinedFeatures = {
+                ...combinedFeatures,
+
+                ...PhishCatcher
+                    .Extractors
+                    .extractURLFeatures(
+                        combinedURL
+                    )
+            };
+        }
+
+
+        /*
+         * Domain features
+         */
+        if (
+            typeof PhishCatcher
+                .Extractors
+                .getDomainFeatures ===
+            "function"
+        ) {
+
+            combinedFeatures = {
+                ...combinedFeatures,
+
+                ...PhishCatcher
+                    .Extractors
+                    .getDomainFeatures(
+                        combinedURL
+                    )
+            };
+        }
+
+
+        /*
+         * Entropy features
+         */
+        if (
+            typeof PhishCatcher
+                .Extractors
+                .extractEntropyFeatures ===
+            "function"
+        ) {
+
+            combinedFeatures = {
+                ...combinedFeatures,
+
+                ...PhishCatcher
+                    .Extractors
+                    .extractEntropyFeatures(
+                        combinedURL
+                    )
+            };
+        }
+
+
+        /*
+         * Keyword features
+         */
+        if (
+            typeof PhishCatcher
+                .Extractors
+                .extractKeywordFeatures ===
+            "function"
+        ) {
+
+            combinedFeatures = {
+                ...combinedFeatures,
+
+                ...PhishCatcher
+                    .Extractors
+                    .extractKeywordFeatures(
+                        combinedURL
+                    )
+            };
+        }
+
+
+        console.log(
+            "Combined test URL:"
+        );
+
+        console.log(
+            combinedURL
+        );
+
+
+        console.log(
+            "Combined features:"
+        );
+
+        console.table(
+            combinedFeatures
+        );
+
+
+        /*
+         * -----------------------------------------------------
+         * FINAL SUMMARY
+         * -----------------------------------------------------
+         */
+
+        console.log(
+            "\n=========================================="
+        );
+
+        console.log(
+            "FINAL TEST SUMMARY"
+        );
+
+        console.log(
+            "=========================================="
+        );
+
+        console.log(
+            "Unicode URL:",
+            unicodeTestURL
+        );
+
+        console.log(
+            "Raw Unicode hostname:",
+            rawUnicodeHostname
+        );
+
+        console.log(
+            "Raw Unicode detected:",
+            rawUnicodeDetected
+        );
+
+        console.log(
+            "unicode_present:",
+            unicodeFeatures
+                .unicode_present
+        );
+
+        console.log(
+            "mixed_script:",
+            unicodeFeatures
+                .mixed_script
+        );
+
+        console.log(
+            "homograph_similarity:",
+            unicodeFeatures
+                .homograph_similarity
+        );
+
+        console.log(
+            "=========================================="
+        );
+
+    </script>
+
+</body>
+</html>
