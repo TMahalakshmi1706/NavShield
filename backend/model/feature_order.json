@@ -1,0 +1,23 @@
+[
+    "ip_address",
+    "url_length",
+    "tiny_url",
+    "at_symbol",
+    "redirect_double_slash",
+    "prefix_suffix",
+    "subdomains",
+    "https",
+    "non_standard_port",
+    "https_in_domain",
+    "favicon",
+    "request_url",
+    "url_of_anchor",
+    "links_in_script_link",
+    "server_form_handler",
+    "suspicious_inline_js",
+    "hidden_html_elements",
+    "unicode_present",
+    "mixed_script",
+    "homograph_similarity",
+    "domain_age_days"
+]
