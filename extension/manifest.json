@@ -3,10 +3,12 @@
   "name": "PhishCatcher",
   "version": "1.0.0",
   "description": "Real-time phishing website detection using URL and webpage security features.",
-  
+
   "permissions": [
     "activeTab",
-    "storage"
+    "storage",
+    "tabs",
+    "webNavigation"
   ],
 
   "host_permissions": [

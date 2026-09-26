@@ -71,9 +71,7 @@ def predict_phishing(
         )
 
     try:
-        result = predict(
-            request.features
-        )
+        result = predict(request.features, request.url)
 
         return PredictionResponse(
             prediction=result["prediction"],

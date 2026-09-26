@@ -1,28 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>PhishCatcher</title>
 
-    <link rel="stylesheet" href="popup.css">
+    <link
+        rel="stylesheet"
+        href="popup.css"
+    >
+
 </head>
+
 
 <body>
 
     <div class="container">
 
+
+        <!-- ================================================= -->
+        <!-- HEADER -->
+        <!-- ================================================= -->
+
         <header class="header">
-            <h1>PhishCatcher</h1>
-            <p>Phishing Website Detection</p>
+
+            <h1>
+                PhishCatcher
+            </h1>
+
+            <p>
+                Phishing Website Detection
+            </p>
+
         </header>
+
+
+        <!-- ================================================= -->
+        <!-- MAIN -->
+        <!-- ================================================= -->
 
         <main class="content">
 
+
+            <!-- STATUS -->
+
             <div class="status-box">
-                <span id="status">Analyzing current page...</span>
+
+                <span id="status">
+                    Analyzing current page...
+                </span>
+
             </div>
+
+
+            <!-- ML RESULT -->
 
             <div class="result-card">
 
@@ -30,39 +68,154 @@
                     Detection Result
                 </div>
 
-                <div id="result" class="result">
+                <div
+                    id="result"
+                    class="result"
+                >
                     —
                 </div>
 
             </div>
 
+
+            <!-- EXISTING DETAILS -->
+
             <div class="details">
 
-                <div class="detail-row">
-                    <span class="label">URL</span>
-                    <span id="url" class="value">
-                        —
-                    </span>
-                </div>
 
                 <div class="detail-row">
-                    <span class="label">Phishing Probability</span>
-                    <span id="probability" class="value">
+
+                    <span class="label">
+                        URL
+                    </span>
+
+                    <span
+                        id="url"
+                        class="value"
+                    >
                         —
                     </span>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span class="label">
+                        Phishing Probability
+                    </span>
+
+                    <span
+                        id="probability"
+                        class="value"
+                    >
+                        —
+                    </span>
+
                 </div>
 
             </div>
 
+
+            <!-- ================================================= -->
+            <!-- NEW SECURITY ANALYSIS -->
+            <!-- ================================================= -->
+
+            <div class="security-card">
+
+
+                <div class="security-title">
+                    Security Analysis
+                </div>
+
+
+                <!-- TYPOSQUATTING -->
+
+                <div class="security-row">
+
+                    <span class="security-label">
+                        Typosquatting
+                    </span>
+
+                    <span
+                        id="typosquatting"
+                        class="security-value"
+                    >
+                        Checking...
+                    </span>
+
+                </div>
+
+
+                <!-- REDIRECT -->
+
+                <div class="security-row">
+
+                    <span class="security-label">
+                        Redirect
+                    </span>
+
+                    <span
+                        id="redirect"
+                        class="security-value"
+                    >
+                        Checking...
+                    </span>
+
+                </div>
+
+
+                <!-- REDIRECT CHAIN -->
+
+                <div class="security-row">
+
+                    <span class="security-label">
+                        Redirect Chain
+                    </span>
+
+                    <span
+                        id="redirectChain"
+                        class="security-value"
+                    >
+                        None
+                    </span>
+
+                </div>
+
+
+                <!-- TYPOSQUATTING MATCH -->
+
+                <div
+                    id="typosquattingDetails"
+                    class="security-extra"
+                >
+                </div>
+
+
+            </div>
+
+
         </main>
 
+
+        <!-- ================================================= -->
+        <!-- FOOTER -->
+        <!-- ================================================= -->
+
         <footer class="footer">
-            <span>PhishCatcher v1.0</span>
+
+            <span>
+                PhishCatcher v1.0
+            </span>
+
         </footer>
 
+
     </div>
+
 
     <script src="popup.js"></script>
 
 </body>
+
 </html>
