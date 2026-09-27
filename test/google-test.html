@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Google</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            width: 100%;
+            min-height: 100%;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #202124;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* =========================
+           TOP NAVIGATION
+        ========================== */
+
+        .header {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 18px;
+        }
+
+        .header-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 13px;
+        }
+
+        .header-links a {
+            color: #202124;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .header-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Google apps icon */
+
+        .apps-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .apps-button:hover {
+            background: #f1f3f4;
+        }
+
+        .apps-grid {
+            width: 18px;
+            height: 18px;
+            display: grid;
+            grid-template-columns: repeat(3, 4px);
+            grid-template-rows: repeat(3, 4px);
+            gap: 2px;
+        }
+
+        .apps-grid span {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #5f6368;
+        }
+
+        /* Sign in */
+
+        .sign-in {
+            border: 1px solid transparent;
+            background: #1a73e8;
+            color: #fff !important;
+            padding: 10px 22px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none !important;
+        }
+
+        .sign-in:hover {
+            background: #1765cc;
+        }
+
+        /* =========================
+           MAIN CONTENT
+        ========================== */
+
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 155px;
+        }
+
+        /* Google logo */
+
+        .logo {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            font-size: 92px;
+            line-height: 1;
+            letter-spacing: -7px;
+            font-weight: 500;
+            margin-bottom: 36px;
+            user-select: none;
+        }
+
+        .blue {
+            color: #4285f4;
+        }
+
+        .red {
+            color: #ea4335;
+        }
+
+        .yellow {
+            color: #fbbc05;
+        }
+
+        .green {
+            color: #34a853;
+        }
+
+        /* =========================
+           SEARCH AREA
+        ========================== */
+
+        .search-area {
+            width: 100%;
+            max-width: 584px;
+            padding: 0 20px;
+        }
+
+        .search-box {
+            height: 46px;
+            width: 100%;
+            border: 1px solid #dfe1e5;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            transition: box-shadow 0.15s ease;
+        }
+
+        .search-box:hover,
+        .search-box:focus-within {
+            border-color: transparent;
+            box-shadow:
+                0 1px 6px rgba(32, 33, 36, 0.18);
+        }
+
+        /* Search icon */
+
+        .search-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .search-icon::before {
+            content: "";
+            position: absolute;
+            width: 11px;
+            height: 11px;
+            border: 2px solid #9aa0a6;
+            border-radius: 50%;
+            left: 1px;
+            top: 1px;
+        }
+
+        .search-icon::after {
+            content: "";
+            position: absolute;
+            width: 7px;
+            height: 2px;
+            background: #9aa0a6;
+            transform: rotate(45deg);
+            left: 12px;
+            top: 14px;
+            border-radius: 2px;
+        }
+
+        .search-input {
+            flex: 1;
+            height: 100%;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 16px;
+            color: #202124;
+            min-width: 0;
+        }
+
+        /* Microphone */
+
+        .voice-icon {
+            width: 22px;
+            height: 22px;
+            position: relative;
+            margin-left: 10px;
+            flex-shrink: 0;
+        }
+
+        .voice-icon::before {
+            content: "";
+            position: absolute;
+            width: 7px;
+            height: 13px;
+            border: 2px solid #4285f4;
+            border-radius: 8px;
+            left: 6px;
+            top: 0;
+        }
+
+        .voice-icon::after {
+            content: "";
+            position: absolute;
+            width: 12px;
+            height: 9px;
+            border: 2px solid #4285f4;
+            border-top: none;
+            border-radius: 0 0 9px 9px;
+            left: 3.5px;
+            top: 10px;
+        }
+
+        /* =========================
+           SEARCH BUTTONS
+        ========================== */
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 11px;
+            margin-top: 30px;
+        }
+
+        .search-button {
+            height: 36px;
+            padding: 0 17px;
+            border: 1px solid #f8f9fa;
+            border-radius: 4px;
+            background: #f8f9fa;
+            color: #3c4043;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .search-button:hover {
+            border: 1px solid #dadce0;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+            color: #202124;
+        }
+
+        /* =========================
+           LANGUAGE SECTION
+        ========================== */
+
+        .language {
+            margin-top: 28px;
+            text-align: center;
+            font-size: 13px;
+            color: #3c4043;
+        }
+
+        .language a {
+            color: #1a0dab;
+            text-decoration: none;
+            margin-left: 7px;
+        }
+
+        .language a:hover {
+            text-decoration: underline;
+        }
+
+        /* =========================
+           FOOTER
+        ========================== */
+
+        .footer {
+            background: #f2f2f2;
+            color: #70757a;
+            font-size: 14px;
+        }
+
+        .footer-country {
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
+            border-bottom: 1px solid #dadce0;
+        }
+
+        .footer-bottom {
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+        }
+
+        .footer-left,
+        .footer-right {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+        .footer a {
+            color: #70757a;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================== */
+
+        @media (max-width: 700px) {
+
+            .header {
+                padding: 0 10px;
+            }
+
+            .header-links {
+                gap: 12px;
+            }
+
+            .main {
+                padding-top: 110px;
+            }
+
+            .logo {
+                font-size: 68px;
+                letter-spacing: -5px;
+                margin-bottom: 30px;
+            }
+
+            .search-area {
+                max-width: 100%;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+            }
+
+            .footer-left,
+            .footer-right {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 18px;
+            }
+        }
+
+        @media (max-width: 480px) {
+
+            .header-links a:first-child,
+            .header-links a:nth-child(2) {
+                display: none;
+            }
+
+            .logo {
+                font-size: 58px;
+            }
+
+            .buttons {
+                flex-wrap: wrap;
+            }
+
+            .language {
+                padding: 0 15px;
+                line-height: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================
+         HEADER
+    ========================== -->
+
+    <header class="header">
+
+        <nav class="header-links">
+
+            <a href="#" onclick="return false;">Gmail</a>
+
+            <a href="#" onclick="return false;">Images</a>
+
+            <button class="apps-button" aria-label="Google Apps">
+                <div class="apps-grid">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </button>
+
+            <a
+                href="#"
+                class="sign-in"
+                onclick="return false;"
+            >
+                Sign in
+            </a>
+
+        </nav>
+
+    </header>
+
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+
+    <main class="main">
+
+        <!-- Google-style logo -->
+
+        <div class="logo" aria-label="Google">
+            <span class="blue">G</span>
+            <span class="red">o</span>
+            <span class="yellow">o</span>
+            <span class="blue">g</span>
+            <span class="green">l</span>
+            <span class="red">e</span>
+        </div>
+
+
+        <!-- Search -->
+
+        <section class="search-area">
+
+            <div class="search-box">
+
+                <div class="search-icon"></div>
+
+                <input
+                    type="text"
+                    class="search-input"
+                    aria-label="Search"
+                    autocomplete="off"
+                >
+
+                <div class="voice-icon"></div>
+
+            </div>
+
+
+            <!-- Buttons -->
+
+            <div class="buttons">
+
+                <button
+                    class="search-button"
+                    onclick="return false;"
+                >
+                    Google Search
+                </button>
+
+                <button
+                    class="search-button"
+                    onclick="return false;"
+                >
+                    I'm Feeling Lucky
+                </button>
+
+            </div>
+
+
+            <!-- Languages -->
+
+            <div class="language">
+
+                Google offered in:
+
+                <a href="#" onclick="return false;">हिन्दी</a>
+                <a href="#" onclick="return false;">বাংলা</a>
+                <a href="#" onclick="return false;">తెలుగు</a>
+                <a href="#" onclick="return false;">मराठी</a>
+                <a href="#" onclick="return false;">தமிழ்</a>
+                <a href="#" onclick="return false;">ગુજરાતી</a>
+                <a href="#" onclick="return false;">ಕನ್ನಡ</a>
+                <a href="#" onclick="return false;">മലയാളം</a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <footer class="footer">
+
+        <div class="footer-country">
+            India
+        </div>
+
+
+        <div class="footer-bottom">
+
+            <div class="footer-left">
+
+                <a href="#" onclick="return false;">About</a>
+
+                <a href="#" onclick="return false;">Advertising</a>
+
+                <a href="#" onclick="return false;">Business</a>
+
+                <a href="#" onclick="return false;">
+                    How Search works
+                </a>
+
+            </div>
+
+
+            <div class="footer-right">
+
+                <a href="#" onclick="return false;">Privacy</a>
+
+                <a href="#" onclick="return false;">Terms</a>
+
+                <a href="#" onclick="return false;">Settings</a>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+</body>
+</html>

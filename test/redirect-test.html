@@ -1,87 +1,73 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Redirect Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Continue</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
         body {
-            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100%;
+        }
+
+        body {
+            background: #ffffff;
+            color: #000000;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 16px;
+        }
+
+        .container {
             max-width: 700px;
-            margin: 80px auto;
-            padding: 30px;
+            margin: 160px auto;
+            padding: 20px;
             text-align: center;
         }
 
-        h1 {
-            margin-bottom: 20px;
-        }
-
         p {
-            font-size: 18px;
+            margin: 28px 0;
             line-height: 1.6;
         }
 
-        button {
-            padding: 12px 25px;
-            margin: 15px 10px;
-            font-size: 16px;
+        a {
+            color: #000000;
+            text-decoration: underline;
             cursor: pointer;
+        }
+
+        a:hover {
+            color: #333333;
         }
     </style>
 </head>
 
 <body>
 
-    <h1>Redirect Test Page</h1>
+    <div class="container">
 
-    <p>
-        This page is being used to test
-        PhishCatcher's redirect detection.
-    </p>
+        <p>
+            To continue, please
+            <a href="https://httpbin.org/redirect-to?url=https%3A%2F%2Fwww.amazon.com%2F">
+                click here
+            </a>.
+        </p>
 
-    <p>
-        Do you want to continue to the destination page?
-    </p>
+        <p>
+            If you do not wish to continue, please
+            <a href="#" onclick="history.back(); return false;">
+                click here to go back
+            </a>.
+        </p>
 
-    <button id="continueButton">
-        Continue
-    </button>
-
-    <button id="backButton">
-        Go Back
-    </button>
-
-
-    <script>
-
-        document
-            .getElementById("continueButton")
-            .addEventListener("click", function () {
-
-                /*
-                 * Client-side redirect.
-                 *
-                 * This changes the browser URL and should
-                 * allow PhishCatcher to detect the redirect.
-                 */
-
-                window.location.replace(
-                    "http://g00gle.com/"
-                );
-
-            });
-
-
-        document
-            .getElementById("backButton")
-            .addEventListener("click", function () {
-
-                window.history.back();
-
-            });
-
-    </script>
+    </div>
 
 </body>
 </html>
